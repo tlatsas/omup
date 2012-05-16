@@ -109,7 +109,7 @@ if __name__ == '__main__':
     bbc, file_uri = parse_response(response)
 
     # print urls
-    print("File : {0}".format(file_uri))
+    print("{0}/{1}".format(file_uri, os.path.basename(args.file[0])))
     if args.bbc is True:
         print("BBC code: {0}".format(bbc))
 
