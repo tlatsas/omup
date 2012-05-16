@@ -24,6 +24,9 @@ def cmd_parse():
     parser.add_argument("-p", "--prompt", action="store_true", default=False,
         help="Prompt before upload.")
 
+    parser.add_argument("-s", "--short", action="store_true", default=False,
+        help="show a shorter file url (strips filename)")
+
     parser.add_argument("-b", "--bbc", action="store_true", default=False,
         help="show BBC code")
 
@@ -109,7 +112,11 @@ if __name__ == '__main__':
     bbc, file_uri = parse_response(response)
 
     # print urls
-    print("{0}/{1}".format(file_uri, os.path.basename(args.file[0])))
+    if args.short is True:
+        print(file_uri)
+    else:
+        print("{0}/{1}".format(file_uri, os.path.basename(args.file[0])))
+
     if args.bbc is True:
         print("BBC code: {0}".format(bbc))
 
