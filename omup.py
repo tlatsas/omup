@@ -22,7 +22,7 @@ def cmd_parse():
         description="Upload files to omploader.org from the command line.")
 
     parser.add_argument("-p", "--prompt", action="store_true", default=False,
-        help="Prompt before upload.")
+        help="prompt before upload")
 
     parser.add_argument("-s", "--short", action="store_true", default=False,
         help="show a shorter file url (strips filename)")
