@@ -11,6 +11,7 @@ import argparse
 import http.client
 import mimetypes
 import re
+import os
 
 OMP_URL = "ompldr.org"
 OMP_UP = "/upload"
@@ -58,7 +59,7 @@ def upload(filename):
         print("Error reading file {0}".format(filename))
         sys.exit(1)
 
-    header, body = multipart_encode(filename, data)
+    header, body = multipart_encode(os.path.basename(filename), data)
 
     # TODO add try block here
     conn = http.client.HTTPConnection(OMP_URL)
