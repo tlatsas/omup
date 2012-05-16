@@ -24,6 +24,9 @@ def cmd_parse():
     parser.add_argument("-p", "--prompt", action="store_true", default=False,
         help="Prompt before upload.")
 
+    parser.add_argument("-b", "--bbc", action="store_true", default=False,
+        help="show BBC code")
+
     parser.add_argument("file", nargs=1, help="File to upload.")
 
     return parser.parse_args()
@@ -105,7 +108,9 @@ if __name__ == '__main__':
 
     bbc, file_uri = parse_response(response)
 
-    print("BBC code: {0}".format(bbc))
+    # print urls
     print("File : {0}".format(file_uri))
+    if args.bbc is True:
+        print("BBC code: {0}".format(bbc))
 
     sys.exit(0)
