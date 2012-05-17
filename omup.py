@@ -106,7 +106,20 @@ def parse_response(res):
         print("Cannot parse response output.")
         sys.exit(1)
 
-    return bbc, file_uri
+    # use file uri to extract the href link from response
+    # we need to get the href because omploader truncates
+    # long names from the <a> contents
+    file_id = file_uri.split('/')[-1].strip('/')
+    HREF_RE = re.compile('href="(?P<full>.*/{0}/.*?)"'.format(file_id))
+
+    try:
+        href = HREF_RE.search(res).group('full')
+    except AttributeError:
+        print("Cannot parse response output.")
+        sys.exit(1)
+
+    full_uri = "http://{0}{1}".format(OMP_URL, href)
+    return bbc, file_uri, full_uri
 
 
 if __name__ == '__main__':
@@ -119,13 +132,13 @@ if __name__ == '__main__':
 
     response = upload(args.file[0])
 
-    bbc, file_uri = parse_response(response)
+    bbc, file_uri, full_uri = parse_response(response)
 
     # print urls
     if args.short is True:
         print(file_uri)
     else:
-        print("{0}/{1}".format(file_uri, os.path.basename(args.file[0])))
+        print(full_uri)
 
     if args.bbc is True:
         print("BBC code: {0}".format(bbc))
