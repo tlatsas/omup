@@ -87,14 +87,16 @@ def parse_response(res):
     try:
         bbc = BBC_RE.search(res).group()
     except AttributeError:
-        bbc = ''
+        print("Cannot parse response output.")
+        sys.exit(1)
 
     # extract file uri from bbc code
     URI_RE = re.compile(r'^\[url\=(?P<uri>.*?)(\].*\[/url])')
     try:
         file_uri = URI_RE.search(bbc).group('uri')
     except AttributeError:
-        file_uri = ''
+        print("Cannot parse response output.")
+        sys.exit(1)
 
     return bbc, file_uri
 
