@@ -81,7 +81,15 @@ def upload(filename):
 
 
 def parse_response(res):
-    """parse response page and return bbc code and file uri"""
+    """
+    parse response page and return the interesting parts:
+        * bbc code
+        * short file uri
+        * full file uri
+
+    we cannot rely too much on the html response so we first
+    filter the BBC code string
+    """
     # extract bbc code from response
     BBC_RE = re.compile(r'\[url\=.*\[/url\]')
     try:
