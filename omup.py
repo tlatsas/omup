@@ -44,14 +44,16 @@ def multipart_encode(filename, data):
     header = "multipart/form-data; boundary={0}".format(boundary)
 
     content = []
-    content.append("--{0}".format(boundary).encode('latin-1'))
-    content.append("Content-Type: {0}".format(mime).encode('latin-1'))
-    content.append("Content-Disposition: form-data; name=\"file1\"; filename=\"{0}\"".format(filename).encode('latin-1'))
-    content.append("".encode('latin-1'))
+    content.append("--{0}".format(boundary))
+    content.append("Content-Type: {0}".format(mime))
+    content.append("Content-Disposition: form-data; name=\"file1\"; filename=\"{0}\"".format(filename))
+    content.append("")
     content.append(data)
-    content.append("--{0}--".format(boundary).encode('latin-1'))
+    content.append("--{0}--".format(boundary))
 
-    body = crlf.join(content)
+    body = crlf.join(
+            c.encode('latin-1') if type(c) is str else c
+            for c in content)
 
     return header, body
 
