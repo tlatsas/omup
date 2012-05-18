@@ -46,7 +46,8 @@ def multipart_encode(filename, data):
     content = []
     content.append("--{0}".format(boundary))
     content.append("Content-Type: {0}".format(mime))
-    content.append("Content-Disposition: form-data; name=\"file1\"; filename=\"{0}\"".format(filename))
+    content.append(("Content-Disposition: form-data; "
+                    "name=\"file1\"; filename=\"{0}\"".format(filename)))
     content.append("")
     content.append(data)
     content.append("--{0}--".format(boundary))
@@ -128,7 +129,8 @@ if __name__ == '__main__':
     args = cmd_parse()
 
     if args.prompt is True:
-        answer = input("Upload {!r} to omploader? [y/n] > ".format(args.file[0]))
+        answer = input(("Upload {!r} to omploader? "
+                        "[y/n] > ".format(args.file[0])))
         if answer.lower() not in ('y', 'yes'):
             sys.exit(0)
 
