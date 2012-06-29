@@ -12,6 +12,7 @@ import http.client
 import mimetypes
 import re
 import os
+from urllib.parse import quote
 
 OMP_URL = "ompldr.org"
 OMP_UP = "/upload"
@@ -121,7 +122,7 @@ def parse_response(res):
         print("Cannot parse response output.")
         sys.exit(1)
 
-    full_uri = "http://{0}{1}".format(OMP_URL, href)
+    full_uri = "http://{0}{1}".format(OMP_URL, quote(href))
     return bbc, short_uri, full_uri
 
 
