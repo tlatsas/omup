@@ -9,6 +9,7 @@
 import sys
 import argparse
 import http.client
+import socket
 import mimetypes
 import re
 import os
@@ -71,11 +72,14 @@ def upload(filename):
 
     header, body = multipart_encode(os.path.basename(filename), data)
 
-    # TODO add try block here
-    conn = http.client.HTTPConnection(OMP_URL)
-    conn.request('POST', OMP_UP, body, {'Content-Type': header})
-    response = conn.getresponse()
+    try:
+        conn = http.client.HTTPConnection(OMP_URL)
+        conn.request('POST', OMP_UP, body, {'Content-Type': header})
+    except socket.error as e:
+        print("Error: cannot connect to {0}".format(OMP_URL))
+        sys.exit(1)
 
+    response = conn.getresponse()
     if response.status is not http.client.OK:
         print("HTTP returned: {0}. Reason: {1}".format(response.status,
                                                        response.reason))
