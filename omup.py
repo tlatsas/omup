@@ -18,10 +18,15 @@ from urllib.parse import quote
 OMP_URL = "ompldr.org"
 OMP_UP = "/upload"
 
+__version__ = "1.0.2"
+
 def cmd_parse():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(
         description="Upload files to omploader.org from the command line.")
+
+    parser.add_argument("-v", "--version", action="version",
+            version="%(prog)s {0}".format(__version__))
 
     parser.add_argument("-p", "--prompt", action="store_true", default=False,
         help="prompt before upload")
