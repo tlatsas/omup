@@ -75,16 +75,26 @@ def upload(filename):
         print("Error reading file {0}".format(filename))
         sys.exit(1)
 
-    header, body = multipart_encode(os.path.basename(filename), data)
+    try:
+        header, body = multipart_encode(os.path.basename(filename), data)
+    except KeyboardInterrupt:
+        print("Terminated by user request")
+        sys.exit(1)
 
     try:
         conn = http.client.HTTPConnection(OMP_URL)
-        conn.request('POST', OMP_UP, body, {'Content-Type': header})
+        try:
+            conn.request('POST', OMP_UP, body, {'Content-Type': header})
+            response = conn.getresponse()
+        finally:
+            conn.close()
+    except KeyboardInterrupt:
+        print("Terminated by user request")
+        sys.exit(1)
     except socket.error as e:
         print("Error: cannot connect to {0}".format(OMP_URL))
         sys.exit(1)
 
-    response = conn.getresponse()
     if response.status is not http.client.OK:
         print("HTTP returned: {0}. Reason: {1}".format(response.status,
                                                        response.reason))
