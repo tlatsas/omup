@@ -42,6 +42,12 @@ def cmd_parse():
     return parser.parse_args()
 
 
+def e_print(msg, status=1):
+    """Print error message and exit immediately"""
+    print(msg)
+    sys.exit(status)
+
+
 def multipart_encode(filename, data):
     """format multipart message, return body + header"""
     boundary = "----------B0und@ry!"
@@ -72,14 +78,12 @@ def upload(filename):
         with open(filename, 'rb') as fp:
             data = fp.read()
     except:
-        print("Error reading file {0}".format(filename))
-        sys.exit(1)
+        e_print("Error reading file {0}".format(filename))
 
     try:
         header, body = multipart_encode(os.path.basename(filename), data)
     except KeyboardInterrupt:
-        print("Terminated by user request")
-        sys.exit(1)
+        e_print("Terminated by user request")
 
     try:
         conn = http.client.HTTPConnection(OMP_URL)
@@ -89,16 +93,13 @@ def upload(filename):
         finally:
             conn.close()
     except KeyboardInterrupt:
-        print("Terminated by user request")
-        sys.exit(1)
+        e_print("Terminated by user request")
     except socket.error as e:
-        print("Error: cannot connect to {0}".format(OMP_URL))
-        sys.exit(1)
+        e_print("Error: cannot connect to {0}".format(OMP_URL))
 
     if response.status is not http.client.OK:
-        print("HTTP returned: {0}. Reason: {1}".format(response.status,
-                                                       response.reason))
-        sys.exit(1)
+        e_print("HTTP returned: {0}. Reason: {1}".format(response.status,
+                                                         response.reason))
 
     return response.read().decode('UTF-8')
 
@@ -118,16 +119,14 @@ def parse_response(res):
     try:
         bbc = BBC_RE.search(res).group()
     except AttributeError:
-        print("Cannot parse response output.")
-        sys.exit(1)
+        e_print("Cannot parse response output.")
 
     # extract short file uri from bbc code
     SHORT_RE = re.compile(r'^\[url\=(?P<short>.*?)(\].*\[/url])')
     try:
         short_uri = SHORT_RE.search(bbc).group('short')
     except AttributeError:
-        print("Cannot parse response output.")
-        sys.exit(1)
+        e_print("Cannot parse response output.")
 
     # use file uri to extract the href link from response
     # we need to get the href because omploader truncates
@@ -138,8 +137,7 @@ def parse_response(res):
     try:
         href = HREF_RE.search(res).group('full')
     except AttributeError:
-        print("Cannot parse response output.")
-        sys.exit(1)
+        e_print("Cannot parse response output.")
 
     full_uri = "http://{0}{1}".format(OMP_URL, quote(href))
     return bbc, short_uri, full_uri
