@@ -20,6 +20,13 @@ OMP_UP = "/upload"
 
 __version__ = "1.0.2"
 
+
+class ResponseNotOK(http.client.HTTPException):
+    """Raised when service does not accept our upload"""
+    def __init__(self, message):
+        http.client.HTTPException.__init__(self, message)
+
+
 def cmd_parse():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(
@@ -89,19 +96,24 @@ def upload(filename):
         conn = http.client.HTTPConnection(OMP_URL)
         try:
             conn.request('POST', OMP_UP, body, {'Content-Type': header})
+
+            # raise an error if response is not HTTP 200
             response = conn.getresponse()
+            if response.status is not http.client.OK:
+                raise ResponseNotOK("HTTP returned: {0}".format(response.status))
+
+            # html page with URIs
+            page = response.read().decode('UTF-8')
         finally:
             conn.close()
     except KeyboardInterrupt:
         e_print("Terminated by user request")
     except socket.error as e:
         e_print("Error: cannot connect to {0}".format(OMP_URL))
+    except ResponseNotOK as e:
+        e_print("Error: {0}".format(e))
 
-    if response.status is not http.client.OK:
-        e_print("HTTP returned: {0}. Reason: {1}".format(response.status,
-                                                         response.reason))
-
-    return response.read().decode('UTF-8')
+    return page
 
 
 def parse_response(res):
