@@ -119,14 +119,14 @@ def parse_response(res):
     try:
         bbc = BBC_RE.search(res).group()
     except AttributeError:
-        e_print("Cannot parse response output.")
+        e_print("Error while parsing for BBC code.")
 
     # extract short file uri from bbc code
     SHORT_RE = re.compile(r'^\[url\=(?P<short>.*?)(\].*\[/url])')
     try:
         short_uri = SHORT_RE.search(bbc).group('short')
     except AttributeError:
-        e_print("Cannot parse response output.")
+        e_print("Error while parsing for file url.")
 
     # use file uri to extract the href link from response
     # we need to get the href because omploader truncates
@@ -137,7 +137,7 @@ def parse_response(res):
     try:
         href = HREF_RE.search(res).group('full')
     except AttributeError:
-        e_print("Cannot parse response output.")
+        e_print("Error while parsing for filename in URI.")
 
     full_uri = "http://{0}{1}".format(OMP_URL, quote(href))
     return bbc, short_uri, full_uri
