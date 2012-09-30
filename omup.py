@@ -122,7 +122,7 @@ def parse_response(res):
         e_print("Error while parsing for BBC code.")
 
     # extract short file uri from bbc code
-    SHORT_RE = re.compile(r'^\[url\=(?P<short>.*?)(\].*\[/url])')
+    SHORT_RE = re.compile(r'^\[url\=(?P<short>.*?)]')
     try:
         short_uri = SHORT_RE.search(bbc).group('short')
     except AttributeError:
