@@ -18,7 +18,7 @@ from urllib.parse import quote
 OMP_URL = "ompldr.org"
 OMP_UP = "/upload"
 
-__version__ = "1.1.0"
+__version__ = "1.1.2"
 
 
 class ResponseNotOK(http.client.HTTPException):
